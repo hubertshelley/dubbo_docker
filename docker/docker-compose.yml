@@ -1,0 +1,32 @@
+version: "3"
+services:
+  # 注册中心 Zookeeper
+  registry:
+    image: zookeeper
+    user: root
+    restart: always
+    privileged: true
+    ports:
+      - 2182:2181
+      - 2888:2888
+      - 3888:3888
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      # - ./zookeeper/conf/zoo.cfg:/conf/zoo.cfg
+      - ./zookeeper/conf:/conf
+      - ./zookeeper/data:/data
+      - ./zookeeper/logs:/datalog
+  # 数据面板 dubbo-admin
+  dubbo-admin:
+    image: apache/dubbo-admin
+    user: root
+    restart: always
+    ports:
+      - 38080:38080
+    environment:
+      TZ: Asia/Shanghai
+    depends_on:
+      - registry
+    volumes:
+      - ./dubbo_admin:/config
